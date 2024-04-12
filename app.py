@@ -159,7 +159,7 @@ class KnowledgeBasedChatLLM:
             loader = UnstructuredFileLoader(filepath)
             textsplitter = ChineseTextSplitter(pdf=True)
             docs = loader.load_and_split(textsplitter)
-         elif filepath.lower().endswith(".txt"):
+        elif filepath.lower().endswith(".txt"):
             loader = UnstructuredFileLoader(filepath,encoding='utf8') 
             textsplitter = ChineseTextSplitter(pdf=False)
             docs = loader.load_and_split(textsplitter)
@@ -355,7 +355,7 @@ if __name__ == "__main__":
         """)
     # threads to consume the request
     demo.queue(concurrency_count=3) \
-        .launch(server_name='0.0.0.0', # ip for listening, 0.0.0.0 for every inbound traffic, 127.0.0.1 for local inbound
+        .launch(server_name='127.0.0.1', # ip for listening, 0.0.0.0 for every inbound traffic, 127.0.0.1 for local inbound
                 server_port=7860, # the port for listening
                 show_api=False, # if display the api document
                 share=False, # if register a public url

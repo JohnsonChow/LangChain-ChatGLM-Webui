@@ -15,7 +15,10 @@ cpm_kernels
 faiss-cpu
 detectron2@git+https://github.com/facebookresearch/detectron2.git@v0.6#egg=detectron2   # PDF需要
 wandb==0.16.2
-jina    # API版本需要
-langchain-serve # API版本需要
+# 以下两个需要手动安装 尤其是langchain-serve目前在2024年4月24日pip的时候存在bug，在issues里已经存在，目前可以手动下载git并pip或者使用严格策略pip install langchain-serve --use-deprecated legacy-resolver解决
+# 参考links: https://github.com/jina-ai/langchain-serve/issues/143
+#langchain-serve # API版本需要
+#jina    # API版本需要
+# 初次之外需要手动update grpcio版本 【pip install -U grpcio
 protobuf==4.25.2
 langchain-community

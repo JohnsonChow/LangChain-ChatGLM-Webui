@@ -12,6 +12,9 @@ from transformers import AutoModel, AutoModelForCausalLM, AutoTokenizer
 from config import *
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+
+
 
 DEVICE = LLM_DEVICE
 DEVICE_ID = "0"
@@ -146,22 +149,26 @@ class ChatLLM(LLM):
                 if num_gpus < 2 and device_map is None:
                     self.model = (AutoModel.from_pretrained(
                         self.model_name_or_path, trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path), 
-                        **kwargs).half().cuda())
+                        **kwargs).float())
                 else:
                     from accelerate import dispatch_model
 
                     model = AutoModel.from_pretrained(self.model_name_or_path,
                                                     trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path),
-                                                    **kwargs).half()
+                                                    **kwargs).float()
 
                     if device_map is None:
                         device_map = auto_configure_device_map(num_gpus)
 
                     self.model = dispatch_model(model, device_map=device_map)
             else:
+                print("no support gpus")
+                print(self.model_name_or_path)
+                print(llm_device)
                 self.model = (AutoModel.from_pretrained(
                     self.model_name_or_path,
-                    trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float().to(llm_device))
+                    trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float())
+                # print(self.model)
             self.model = self.model.eval()
         
         elif 'chatglm' in self.model_name_or_path.lower():
@@ -173,13 +180,13 @@ class ChatLLM(LLM):
                 if num_gpus < 2 and device_map is None:
                     self.model = (AutoModel.from_pretrained(
                         self.model_name_or_path, trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path), 
-                        **kwargs).half().cuda())
+                        **kwargs).float())
                 else:
                     from accelerate import dispatch_model
 
                     model = AutoModel.from_pretrained(self.model_name_or_path,
                                                     trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path),
-                                                    **kwargs).half()
+                                                    **kwargs).float()
 
                     if device_map is None:
                         device_map = auto_configure_device_map(num_gpus)
@@ -188,7 +195,7 @@ class ChatLLM(LLM):
             else:
                 self.model = (AutoModel.from_pretrained(
                     self.model_name_or_path,
-                    trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float().to(llm_device))
+                    trust_remote_code=True, cache_dir=os.path.join(MODEL_CACHE_PATH, self.model_name_or_path)).float())
             self.model = self.model.eval()
         
         elif 'internlm' in self.model_name_or_path.lower():
